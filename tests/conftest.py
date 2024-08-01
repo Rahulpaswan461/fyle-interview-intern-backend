@@ -2,6 +2,23 @@ import pytest
 import json
 from tests import app
 
+import pytest
+from core import app, db
+
+@pytest.fixture(scope='module')
+def test_client():
+    with app.test_client() as client:
+        with app.app_context():
+            # Set up the database and any necessary data here
+            yield client
+
+@pytest.fixture(scope='module')
+def init_database():
+    with app.app_context():
+        # Create the database tables and any necessary data here
+        db.create_all()
+        yield db
+        db.drop_all()
 
 @pytest.fixture
 def client():
